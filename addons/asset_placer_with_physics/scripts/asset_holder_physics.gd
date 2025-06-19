@@ -1,6 +1,9 @@
 @tool
 extends Node
 
+# Asset holder scenes
+const AssetHolder = preload("res://addons/asset_placer_with_physics/scripts/asset_holder.gd")
+
 var min_linear_velocity_length_squared_threshold: float 
 var min_angular_velocity_length_squared_threshold: float 
 

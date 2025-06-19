@@ -1,8 +1,6 @@
 @tool
 extends RigidBody3D
 
-class_name AssetHolder
-
 @export var _collision_shape_3d: CollisionShape3D
 
 var shape_3d: Shape3D:

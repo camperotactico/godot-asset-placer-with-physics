@@ -10,4 +10,4 @@ static func get_valid_instance_name(base_name: String, instance_parent: Node)-> 
 	return candidate_name
 
 static func _get_random_name(base_name: String) -> String:
-	return "%s %d" % [base_name, randi()%AssetPlacerConstants.MAX_NUMBER_IN_RANDOM_NAMES]
+	return "%s%d" % [base_name, randi()%AssetPlacerConstants.MAX_NUMBER_IN_RANDOM_NAMES]

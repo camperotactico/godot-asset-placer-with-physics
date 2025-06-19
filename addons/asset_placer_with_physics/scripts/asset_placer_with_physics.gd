@@ -4,10 +4,10 @@ extends Node3D
 class_name AssetPlacerWithPhysics
 
 # Asset holder scenes
+const AssetHolder = preload("res://addons/asset_placer_with_physics/scripts/asset_holder.gd")
 const ASSET_HOLDER = preload("res://addons/asset_placer_with_physics/scenes/asset_holder.tscn")
 const AssetHolderPhysics = preload("res://addons/asset_placer_with_physics/scripts/asset_holder_physics.gd")
 const ASSET_HOLDER_PHYSICS = preload("res://addons/asset_placer_with_physics/scenes/asset_holder_physics.tscn")
-
 # Static classes
 const InstanceNamer = preload("res://addons/asset_placer_with_physics/scripts/instance_namer.gd")
 const Instancer = preload("res://addons/asset_placer_with_physics/scripts/instancer.gd")
@@ -39,8 +39,8 @@ func _on_asset_shape_3d_changed(new_shape_3d: Shape3D) -> void:
 
 
 @export_range(0.0,10.0,0.1) var _asset_gravity_scale: float = 5.0
-@export_flags_2d_physics var _asset_collision_layer: int
-@export_flags_2d_physics var _asset_collision_mask: int
+@export_flags_2d_physics var _asset_collision_layer: int = 1
+@export_flags_2d_physics var _asset_collision_mask: int = 1
 
 @export_category("Prop Spawner Parameters")
 @export var _enabled = false
