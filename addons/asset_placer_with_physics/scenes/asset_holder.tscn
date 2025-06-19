@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddalsu0bcukfv"]
+
+[ext_resource type="Script" uid="uid://d2wt8oexg5ft4" path="res://addons/asset_placer_with_physics/scripts/asset_holder.gd" id="1_gx6lf"]
+
+[node name="AssetHolder" type="RigidBody3D" node_paths=PackedStringArray("_collision_shape_3d")]
+script = ExtResource("1_gx6lf")
+_collision_shape_3d = NodePath("CollisionShape3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+debug_color = Color(0, 1, 0, 1)

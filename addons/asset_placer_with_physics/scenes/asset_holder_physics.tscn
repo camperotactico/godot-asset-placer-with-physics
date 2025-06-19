@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://df3hjpqh2dbk2"]
+
+[ext_resource type="Script" uid="uid://dwrhkx2i0i5ch" path="res://addons/asset_placer_with_physics/scripts/asset_holder_physics.gd" id="1_50jle"]
+
+[node name="AssetHolderPhysics" type="Node"]
+script = ExtResource("1_50jle")
