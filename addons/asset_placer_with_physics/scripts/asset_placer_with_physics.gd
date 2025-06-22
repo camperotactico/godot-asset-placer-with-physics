@@ -13,7 +13,7 @@ const InstanceNamer = preload("res://addons/asset_placer_with_physics/scripts/in
 const Instancer = preload("res://addons/asset_placer_with_physics/scripts/instancer.gd")
 
 # Prop placer parameters
-@export_category("Prop Parameters")
+@export_category("Asset Parameters")
 @export var asset_packed_scene: PackedScene:
 	set(value):
 		_on_asset_packed_scene_changed(value)
@@ -37,31 +37,28 @@ func _on_asset_shape_3d_changed(new_shape_3d: Shape3D) -> void:
 	_asset_holder_instance_preview.shape_3d = new_shape_3d
 	_asset_shape_3d = new_shape_3d
 
-
-@export_range(0.0,10.0,0.1) var _asset_gravity_scale: float = 5.0
+@export var asset_collision_shape_position: Vector3
+@export_custom(PROPERTY_HINT_RANGE, "-360,360,0.1,or_greater,or_less,radians") var asset_collision_shape_rotation: Vector3
+@export var asset_collision_shape_scale: Vector3
+@export var collison_shape_3d_debug_color: Color = Color.RED
+@export_range(0.0,10.0,0.1) var _asset_gravity_scale: float = 1.0
 @export_flags_2d_physics var _asset_collision_layer: int = 1
 @export_flags_2d_physics var _asset_collision_mask: int = 1
 
-@export_category("Prop Spawner Parameters")
+@export_category("Asset Spawner Parameters")
 @export var _enabled = false
 @export var _spawn_asset_key: Key = KEY_P
 @export var _spawned_assets_parent: Node
-
-@export_category("Spawn Position Parameters")
 @export_range(0.0,100.0,0.1) var spawned_asset_height: float = 1.0:
 	set(value):
 		_on_spawned_asset_height_changed(value)
 	get:
 		return _spawned_asset_height
-
-
 func _on_spawned_asset_height_changed(new_asset_height: float) -> void:
 	_try_instantiate_asset_holder_preview()
 	_spawned_asset_height = new_asset_height
 	_asset_holder_instance_preview.position.y = _spawned_asset_height
 
-
-@export_category("Spawn Rotation Parameters")
 @export var _randomize_rotation: bool = true
 @export_range(0.0,180.0,1.0, "radians_as_degrees") var _random_x_rotation_range: float = deg_to_rad(180.0)
 @export_range(0.0,180.0,1.0, "radians_as_degrees") var _random_y_rotation_range: float = deg_to_rad(180.0)
@@ -120,6 +117,7 @@ func _enter_tree() -> void:
 func _try_instantiate_asset_holder_preview() -> void:
 	if !_asset_holder_instance_preview:
 		_asset_holder_instance_preview = Instancer.instantiate(ASSET_HOLDER,self,self)
+		_asset_holder_instance_preview.deactivate_collisions()
 
 func _exit_tree() -> void:
 	if !Engine.is_editor_hint():

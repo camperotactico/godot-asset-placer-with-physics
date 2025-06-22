@@ -29,3 +29,7 @@ func deactivate() -> void:
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 	freeze = true
+
+func deactivate_collisions() -> void:
+	collision_layer = 0
+	collision_mask = 0
