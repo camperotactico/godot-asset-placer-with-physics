@@ -25,6 +25,18 @@ func set_packed_scene(new_packed_scene: PackedScene) -> void:
 		_instance_process_mode = instance.process_mode
 		instance.process_mode = Node.PROCESS_MODE_DISABLED
 
+func set_asset_collision_shape_3d_position(new_collision_shape_3d_position: Vector3) -> void:
+	_collision_shape_3d.position = new_collision_shape_3d_position
+
+func set_asset_collision_shape_3d_rotation(new_collision_shape_3d_rotation: Vector3) -> void:
+	_collision_shape_3d.rotation = new_collision_shape_3d_rotation
+	
+func set_asset_collision_shape_3d_scale(new_collision_shape_3d_scale: Vector3) -> void:
+	_collision_shape_3d.scale = new_collision_shape_3d_scale
+
+func set_asset_collision_shape_3d_debug_color(new_debug_color: Color) -> void:
+	_collision_shape_3d.debug_color = new_debug_color
+	
 func deactivate() -> void:
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO

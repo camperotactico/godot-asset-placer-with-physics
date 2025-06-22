@@ -2,10 +2,16 @@
 [![Made with Godot](https://img.shields.io/badge/Made%20with-Godot-478CBF?style=flat&logo=godot%20engine&logoColor=white)](https://godotengine.org)
 ![Mastodon Follow](https://img.shields.io/mastodon/follow/109780053447231118?domain=mastodon.gamedev.place)
 
+![Screenshot of the Godot Editor running the tool.](./screenshots/screenshot-2.png)
 
-An editor plugin that allows any `Node3D` derived `PackedScene` to be instantiated and placed in a 3D scene using physics. 
 
-This tool is useful to automatically place assets that need to lay naturally on the ground, or against other assets.
+An editor plugin that allows assets to be instantiated and dropped on a 3D scene using physics. Useful to automatically place assets that need to lay naturally on the ground or against other assets.
+
+This tool is compatible with any `Node3D` derived `PackedScene` as it works by temporarily wrapping the asset inside a `RigidBody3D`. Then, the physics simulation is enabled for a couple of seconds just for the newly spawned instances.
+
+The `RigidBody3D` node needs a `CollisionShape3D` to work, which is created automatically using the parameters exposed in the inspector next to the field to select the asset.
+
+
 
 ## ⬇️ Installation
 1. Download the asset from the `AssetLib` tab in the Godot Editor.

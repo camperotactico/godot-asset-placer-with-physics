@@ -13,12 +13,13 @@ const InstanceNamer = preload("res://addons/asset_placer_with_physics/scripts/in
 const Instancer = preload("res://addons/asset_placer_with_physics/scripts/instancer.gd")
 
 # Prop placer parameters
-@export_category("Asset Parameters")
 @export var asset_packed_scene: PackedScene:
 	set(value):
 		_on_asset_packed_scene_changed(value)
 	get:
 		return _asset_packed_scene
+
+@export_category("Temporary Asset Collision Shape Parameters")
 @export var asset_shape_3d: Shape3D:
 	set(value):
 		_on_asset_shape_3d_changed(value)
@@ -37,10 +38,52 @@ func _on_asset_shape_3d_changed(new_shape_3d: Shape3D) -> void:
 	_asset_holder_instance_preview.shape_3d = new_shape_3d
 	_asset_shape_3d = new_shape_3d
 
-@export var asset_collision_shape_position: Vector3
-@export_custom(PROPERTY_HINT_RANGE, "-360,360,0.1,or_greater,or_less,radians") var asset_collision_shape_rotation: Vector3
-@export var asset_collision_shape_scale: Vector3
-@export var collison_shape_3d_debug_color: Color = Color.RED
+@export var asset_collision_shape_3d_position: Vector3 = Vector3.ZERO:
+	set(value):
+		_on_asset_collision_shape_3d_position_changed(value)
+	get:
+		return _asset_collision_shape_3d_position
+
+func _on_asset_collision_shape_3d_position_changed(new_collision_shape_3d_position: Vector3) -> void:
+	_try_instantiate_asset_holder_preview()
+	_asset_collision_shape_3d_position = new_collision_shape_3d_position
+	_asset_holder_instance_preview.set_asset_collision_shape_3d_position(_asset_collision_shape_3d_position)
+	
+@export_custom(PROPERTY_HINT_RANGE, "-360,360,0.1,or_greater,or_less,radians") var asset_collision_shape_3d_rotation: Vector3 = Vector3.ZERO:
+	set(value):
+		_on_asset_collision_shape_3d_rotation_changed(value)
+	get:
+		return _asset_collision_shape_3d_rotation
+
+func _on_asset_collision_shape_3d_rotation_changed(new_asset_collision_shape_3d_rotation: Vector3) -> void:
+	_try_instantiate_asset_holder_preview()
+	_asset_collision_shape_3d_rotation = new_asset_collision_shape_3d_rotation
+	_asset_holder_instance_preview.set_asset_collision_shape_3d_rotation(_asset_collision_shape_3d_rotation)
+
+@export var asset_collision_shape_3d_scale: Vector3 = Vector3.ONE:
+	set(value):
+		_on_asset_collision_shape_3d_scale_changed(value)
+	get:
+		return _asset_collision_shape_3d_scale
+
+func _on_asset_collision_shape_3d_scale_changed(new_asset_collision_shape_3d_scale: Vector3) -> void:
+	_try_instantiate_asset_holder_preview()
+	_asset_collision_shape_3d_scale = new_asset_collision_shape_3d_scale
+	_asset_holder_instance_preview.set_asset_collision_shape_3d_scale(_asset_collision_shape_3d_scale)
+
+
+@export var collison_shape_3d_debug_color: Color = Color.RED:
+	set(value):
+		_on_collision_shape_3d_debug_color_changed(value)
+	get:
+		return _asset_collision_shape_3d_debug_color
+
+func _on_collision_shape_3d_debug_color_changed(new_debug_color: Color) -> void:
+	_try_instantiate_asset_holder_preview()
+	_asset_collision_shape_3d_debug_color = new_debug_color
+	_asset_holder_instance_preview.set_asset_collision_shape_3d_debug_color(_asset_collision_shape_3d_debug_color)
+	
+
 @export_range(0.0,10.0,0.1) var _asset_gravity_scale: float = 1.0
 @export_flags_2d_physics var _asset_collision_layer: int = 1
 @export_flags_2d_physics var _asset_collision_mask: int = 1
@@ -60,9 +103,7 @@ func _on_spawned_asset_height_changed(new_asset_height: float) -> void:
 	_asset_holder_instance_preview.position.y = _spawned_asset_height
 
 @export var _randomize_rotation: bool = true
-@export_range(0.0,180.0,1.0, "radians_as_degrees") var _random_x_rotation_range: float = deg_to_rad(180.0)
-@export_range(0.0,180.0,1.0, "radians_as_degrees") var _random_y_rotation_range: float = deg_to_rad(180.0)
-@export_range(0.0,180.0,1.0, "radians_as_degrees") var _random_z_rotation_range: float = deg_to_rad(180.0)
+@export_custom(PROPERTY_HINT_RANGE, "0,180,0.1,or_greater,or_less,radians") var _spawned_asset_random_rotation_range: Vector3 = deg_to_rad(180)*Vector3.ONE
 
 @export_category("Physics Deactivation Parameters")
 @export_range(0.05,10.0,0.05) var _max_physics_simulation_time: float = 1.25
@@ -81,9 +122,6 @@ func _on_spawned_asset_height_changed(new_asset_height: float) -> void:
 		_min_angular_velocity_length_threshold = value
 		_min_angular_velocity_length_squared_threshold = value*value
 		_asset_holder_physics.min_angular_velocity_length_squared_threshold = _min_angular_velocity_length_squared_threshold
-		
-
-
 
 
 # Prop placer variables
@@ -93,6 +131,10 @@ var _asset_holder_instance_preview: AssetHolder
 
 var _asset_packed_scene: PackedScene
 var _asset_shape_3d: Shape3D
+var _asset_collision_shape_3d_position: Vector3 = Vector3.ZERO
+var _asset_collision_shape_3d_rotation: Vector3 = Vector3.ZERO
+var _asset_collision_shape_3d_scale: Vector3 = Vector3.ONE
+var _asset_collision_shape_3d_debug_color: Color = Color.RED
 var _asset_instance_base_name: String
 var _spawned_asset_height: float = 1.0
 
@@ -158,13 +200,18 @@ func try_place_asset(keycode: Key, global_position: Vector3) -> void:
 	var asset_holder_instance: AssetHolder = Instancer.instantiate(ASSET_HOLDER,self,self)
 	asset_holder_instance.set_packed_scene(_asset_packed_scene)
 	asset_holder_instance.shape_3d =_asset_shape_3d 
+	asset_holder_instance.set_asset_collision_shape_3d_position(_asset_collision_shape_3d_position)
+	asset_holder_instance.set_asset_collision_shape_3d_rotation(_asset_collision_shape_3d_rotation)
+	asset_holder_instance.set_asset_collision_shape_3d_scale(_asset_collision_shape_3d_scale)
+	asset_holder_instance.set_asset_collision_shape_3d_debug_color(_asset_collision_shape_3d_debug_color)
+	
 	asset_holder_instance.gravity_scale = _asset_gravity_scale
 	asset_holder_instance.collision_layer = _asset_collision_layer
 	asset_holder_instance.collision_mask = _asset_collision_mask
 	asset_holder_instance.instance.name = InstanceNamer.get_valid_instance_name(_asset_instance_base_name,_spawned_assets_parent)
 	asset_holder_instance.global_position = global_position + _spawned_asset_height*Vector3.UP
 	if _randomize_rotation:
-		asset_holder_instance.global_rotation = Vector3(_random_x_rotation_range*randf_range(-1.0,1.0),_random_y_rotation_range*randf_range(-1.0,1.0),_random_z_rotation_range*randf_range(-1.0,1.0))
+		asset_holder_instance.global_rotation = Vector3(_spawned_asset_random_rotation_range.x*randf_range(-1.0,1.0),_spawned_asset_random_rotation_range.y*randf_range(-1.0,1.0),_spawned_asset_random_rotation_range.z*randf_range(-1.0,1.0))
 	
 	_asset_holder_physics.add_asset_holder(asset_holder_instance, _max_physics_simulation_time)
 

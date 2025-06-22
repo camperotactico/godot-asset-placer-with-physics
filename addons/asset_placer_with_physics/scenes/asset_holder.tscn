@@ -7,4 +7,3 @@ script = ExtResource("1_gx6lf")
 _collision_shape_3d = NodePath("CollisionShape3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-debug_color = Color(0, 1, 0, 1)
